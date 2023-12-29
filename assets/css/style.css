@@ -1,0 +1,92 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  body {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #f5f5f5;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #8A2BE2;
+    margin-top: 20px;
+  }
+  
+  .page-background {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  #moodPlaylistsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .mood-card {
+    width: 200px;
+    height: 250px;
+    background-color: #8A2BE2;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    animation: fadeInUp 0.5s ease-out;
+    transition: background-color 0.3s ease-out;
+  }
+  
+  /* Animation for fadeInUp */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  button {
+    background-color: #8A2BE2;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-out;
+  }
+  
+  button:hover {
+    background-color: #6A1B9A;
+  }
