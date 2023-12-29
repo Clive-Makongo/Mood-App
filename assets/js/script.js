@@ -5,9 +5,62 @@ $(document).ready(function () {
   const spotifyPlayerContainer = $("#spotifyPlayerContainer");
 
   let searchInputValue = "";
-  let accessToken = "";
+  let accessToken =
+    "BQDGrDck9r87X_DodBqt5bPf7T1u_v9JxAStyMQYoyThCLaAM5RRs4zqAZN3_kX4CALF_vNYio85T7B8efBpp7rYc7PBKPTRz-hfQW96xj4bMSfzKpvGXyBVGBWZ01ZC1ptT9id5r9gUUjVC6vZ-ivuo25kJOj-ck4_KHX6_7Bdi4a5SJynTVcM3rC0Jd3FBx4Yr-Lk";
   let moodPlaylists = [];
   let selectedPlaylistUri = "";
+
+  // WEB PLAYER
+  let spotifyPlayer;
+
+  function initSpotifyPlayer() {
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = accessToken;
+
+      spotifyPlayer = new Spotify.Player({
+        name: "Your Web App Name",
+        getOAuthToken: (cb) => {
+          cb(token);
+        },
+      });
+      // Error handling
+
+      // Connect to the player
+      spotifyPlayer.connect();
+    };
+  }
+
+  function playTrack(uri) {
+    spotifyPlayer.resume();
+    spotifyPlayer.play({
+      uris: [uri],
+    });
+  }
+
+  function getPlaylistTracks(playlistId) {
+    authenticateSpotify()
+      .then(() => {
+        const playlistTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+
+        return axios.get(playlistTracksEndpoint, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      })
+      .then((response) => {
+        const tracks = response.data.items;
+        console.log("Tracks in the selected playlist:", tracks);
+
+        // Play the first track in the playlist
+        if (tracks.length > 0) {
+          playTrack(tracks[0].track.uri);
+        }
+      })
+      .catch((error) => {
+        console.error("Error retrieving playlist tracks:", error);
+      });
+  }
 
   function getSearchInput() {
     searchInputValue = searchInput.val();
@@ -29,7 +82,12 @@ $(document).ready(function () {
       })
       .then((response) => {
         const playlists = response.playlists.items;
-        console.log("Playlists:", playlists, response, response.playlists.items[0].tracks);
+        console.log(
+          "Playlists:",
+          playlists,
+          response,
+          response.playlists.items[0].tracks
+        );
 
         // Render the first playlist only
         if (playlists.length > 0) {
@@ -44,7 +102,7 @@ $(document).ready(function () {
   function authenticateSpotify() {
     // REPLACE CLIENT ID
     const clientId = "746bd7c02af2439a94e089e6a1cdfa95";
-    const clientSecret = "746bd7c02af2439a94e089e6a1cdfa95";
+    const clientSecret = "5613691d1dfe4c9a8b0ab38d79f3170f";
 
     const base64Credentials = btoa(`${clientId}:${clientSecret}`);
 
@@ -57,11 +115,11 @@ $(document).ready(function () {
         Authorization: `Basic ${base64Credentials}`,
       },
     })
-    .then((response) => response.access_token)
-    .catch((error) => {
-      console.error("Error authenticating with Spotify:", error);
-      throw error;
-    });
+      .then((response) => response.access_token)
+      .catch((error) => {
+        console.error("Error authenticating with Spotify:", error);
+        throw error;
+      });
   }
 
   function renderMoodPlaylist(playlist) {
@@ -93,7 +151,8 @@ $(document).ready(function () {
   function getPlaylistTracks(playlistId) {
     authenticateSpotify()
       .then((accessToken) => {
-        const playlistTracksEndpoint = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks";
+        const playlistTracksEndpoint =
+          "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks";
 
         return $.ajax({
           url: playlistTracksEndpoint,
@@ -117,9 +176,11 @@ $(document).ready(function () {
       });
   }
 
-
+  // Initialize the Spotify Player
+  initSpotifyPlayer();
   const searchButton = $("#searchButton");
   searchButton.on("click", getSearchInput);
+  
 
   // ... (Rest of your code)
 });
